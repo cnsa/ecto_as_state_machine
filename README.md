@@ -5,7 +5,6 @@ This package allows to use [finite state machine pattern](https://en.wikipedia.o
 * states
 * events
 * transitions
-* repo
 
 and go:
 
