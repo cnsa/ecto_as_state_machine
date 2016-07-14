@@ -85,7 +85,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 Once you've made your additions and mix test passes, go ahead and open a PR!
 
-## TODOs
+## Roadmap to 1.0
 
 - [x] Cover by tests
 - [ ] Custom db column name
