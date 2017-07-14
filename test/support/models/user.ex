@@ -1,6 +1,6 @@
 defmodule EctoStateMachine.User do
   use Ecto.Schema
-  import Ecto.Changeset, only: [cast: 3, validate_required: 2, validate_required: 3]
+  import Ecto.Changeset, only: [cast: 3, validate_required: 2]
 
   @required_params ~w()
   @optional_params ~w(state confirmed_at)

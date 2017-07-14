@@ -131,7 +131,7 @@ defmodule EctoStateMachineTest do
         assert cs.changes.state == "confirmed"
       end
 
-      defp check_confirm_errors(context, method \\ :confirm!, is_raise \\ false) do
+      defp check_confirm_errors(context, method, is_raise \\ false) do
         refute cs_user_initial_error(context, method, :initial_user, is_raise).valid?
         refute cs_user_initial_error(context, method, :not_found_state, is_raise).valid?
         refute cs_user_error(context, method, :initial_user, is_raise).valid?
@@ -178,7 +178,7 @@ defmodule EctoStateMachineTest do
         assert cs.changes.state == "blocked"
       end
 
-      defp check_block_errors(context, method \\ :block!, is_raise \\ false) do
+      defp check_block_errors(context, method, is_raise \\ false) do
         refute cs_user_initial_error(context, method, :unconfirmed_user, is_raise).valid?
         refute cs_user_initial_error(context, method, :blocked_user, is_raise).valid?
         refute cs_user_error(context, method, :initial_user, is_raise).valid?
@@ -218,7 +218,7 @@ defmodule EctoStateMachineTest do
         assert cs.changes.confirmed_at == date
       end
 
-      defp check_admin_errors(context, method \\ :make_admin!, is_raise \\ false) do
+      defp check_admin_errors(context, method, is_raise \\ false) do
         refute cs_user_initial_error(context, method, :initial_user, is_raise).valid?
         refute cs_user_initial_error(context, method, :not_found_state, is_raise).valid?
         refute cs_user_error(context, method, :initial_user, is_raise).valid?
