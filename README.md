@@ -21,7 +21,7 @@ defmodule Dummy.User do
         name:     :confirm,
         from:     [:unconfirmed],
         to:       :confirmed,
-        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: Ecto.DateTime.utc) end # yeah you can bring your own code to these functions.
+        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: DateTime.utc_now |> DateTime.to_naive) end # yeah you can bring your own code to these functions.
       ], [
         name:     :block,
         from:     [:confirmed, :admin],
@@ -31,8 +31,7 @@ defmodule Dummy.User do
         from:     [:confirmed],
         to:       :admin
       ]
-    ],
-  repo: Dummy.Repo
+    ]
 
   schema "users" do
     field :state, :string
@@ -86,8 +85,8 @@ Once you've made your additions and mix test passes, go ahead and open a PR!
 
 - [x] Cover by tests
 - [ ] Custom db column name
-- [ ] Validation method for changeset indicates its value in the correct range
-- [ ] Initial value
-- [ ] CI
-- [ ] Add status? methods
+- [x] Validation method for changeset indicates its value in the correct range
+- [x] Initial value
+- [x] CI
+- [x] Add status? methods
 - [x] Introduce it at elixir-radar and my blog
