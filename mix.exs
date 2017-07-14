@@ -8,7 +8,7 @@ defmodule EctoStateMachine.Mixfile do
     [
       app: :ecto_state_machine,
       version: @version,
-      elixir: "~> 1.2",
+      elixir: "~> 1.3",
       elixirc_paths: elixirc_paths(Mix.env),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
@@ -36,23 +36,19 @@ defmodule EctoStateMachine.Mixfile do
 
   defp deps do
     [
-     {:ecto, ">= 1.0.0 or >= 2.0.0"},
+     {:ecto, ">= 2.0.0"},
 
      {:postgrex,   ">= 0.0.0", only: :test},
-     {:ex_machina, "~> 1.0", only: :test},
-     {:ex_spec,    ex_12_13("~> 1.1.0", "~> 2.0.0"), only: :test}
+     {:ex_machina, "~> 2.0", only: :test},
+     {:ex_spec,    "~> 2.0.0", only: :test}
     ]
   end
-
-  defp ex_12_13(v12, v13), do: if ex_13, do: v13, else: v12
-
-  defp ex_13, do: Version.match?(System.version, ">= 1.3.0")
 
   defp package do
     [
       name: :ecto_state_machine,
       files: ["lib/ecto_state_machine.ex", "mix.exs"],
-      maintainers: ["Alex Antonov"],
+      maintainers: ["Alexander Merkulov", "Alex Antonov"],
       licenses: ["Apache 2.0"],
       links: %{
         "GitHub"        => @project_url,

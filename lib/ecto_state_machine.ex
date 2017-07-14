@@ -1,9 +1,10 @@
 defmodule EctoStateMachine do
   defmacro __using__(opts) do
-    repo   = Keyword.get(opts, :repo)
-    states = Keyword.get(opts, :states)
+    app     = Mix.Project.config[:app]
+    repo    = Application.get_env(app, :ecto_repos) |> List.first
+    states  = Keyword.get(opts, :states)
     initial = Keyword.get(opts, :initial)
-    events = Keyword.get(opts, :events)
+    events  = Keyword.get(opts, :events)
       |> Enum.map(fn(event) ->
         Keyword.put_new(event, :callback, quote do: fn(model) -> model end)
       end)
@@ -11,7 +12,9 @@ defmodule EctoStateMachine do
         Keyword.update!(event, :callback, &Macro.escape/1)
       end)
 
-    quote bind_quoted: [states: states, events: events, repo: repo, initial: initial] do
+    quote bind_quoted: [states: states, events: events, repo: repo, initial: initial ] do
+      alias Ecto.Changeset
+
       events
       |> Enum.each(fn(event) ->
         unless event[:to] in states do
@@ -19,18 +22,17 @@ defmodule EctoStateMachine do
         end
 
         def unquote(event[:name])(model) do
-          validate_state_model(model, unquote(event))
-
-          change_state(model, unquote(event[:to]))
+          model
+          |> Changeset.change(%{state: "#{unquote(event[:to])}"})
           |> unquote(event[:callback]).()
+          |> _validate_state_transition(unquote(event), _valid_model(model))
         end
 
         def unquote(:"#{event[:name]}!")(model) do
-          { :ok, new_model } =
-            unquote(event[:name])(model)
-            |> unquote(repo).update
-
-          new_model
+          case unquote(event[:name])(model) |> unquote(repo).update do
+            { :ok, new_model } -> new_model
+            e -> e
+          end
         end
 
         def unquote(:"can_#{event[:name]}?")(model) do
@@ -45,27 +47,23 @@ defmodule EctoStateMachine do
         end
       end)
 
-      defp unquote(:validate_state_model)(%Ecto.Changeset{} = cs, event) do
+      defp unquote(:_valid_model)(%Ecto.Changeset{} = cs) do
         case cs do
-          %{ data:  model } -> _validate_state_field(model, event)
-          %{ model: model } -> _validate_state_field(model, event)
+          %{ data:  model } -> model
+          %{ model: model } -> model
         end
       end
-      defp unquote(:validate_state_model)(model, event), do: _validate_state_field(model, event)
+      defp unquote(:_valid_model)(model), do: model
 
-      defp unquote(:change_state)(%Ecto.Changeset{} = cs, event_to) do
-        cs
-        |> Ecto.Changeset.change(%{ state: "#{event_to}" })
-      end
-      defp unquote(:change_state)(model, event_to) do
-        model
-        |> Ecto.Changeset.cast(%{ state: "#{event_to}" }, ~w(state), ~w())
-      end
-
-      defp unquote(:_validate_state_field)(model, event) do
+      defp unquote(:_validate_state_transition)(changeset, event, model) do
         state = state_with_initial(model.state)
-        unless :"#{state}" in event[:from] do
-          raise RuntimeError, "You can't move state from :#{state || "nil"} to :#{event[:to]}"
+
+        if :"#{state}" in event[:from] do
+          changeset
+        else
+          changeset
+          |> Changeset.add_error("state",
+             "You can't move state from :#{state || "nil"} to :#{event[:to]}")
         end
       end
 

@@ -1,6 +1,6 @@
 defmodule EctoStateMachine.User do
   use Ecto.Schema
-  import Ecto.Changeset, only: [cast: 4]
+  import Ecto.Changeset, only: [cast: 3, validate_required: 2, validate_required: 3]
 
   @required_params ~w()
   @optional_params ~w(state confirmed_at)
@@ -12,7 +12,7 @@ defmodule EctoStateMachine.User do
         name:     :confirm,
         from:     [:unconfirmed],
         to:       :confirmed,
-        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: Ecto.DateTime.utc) end
+        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: DateTime.utc_now |> DateTime.to_naive) end
       ], [
         name:     :block,
         from:     [:confirmed, :admin],
@@ -22,16 +22,16 @@ defmodule EctoStateMachine.User do
         from:     [:confirmed],
         to:       :admin
       ]
-    ],
-    repo: EctoStateMachine.TestRepo
+    ]
 
   schema "users" do
     field :state, :string
-    field :confirmed_at, Ecto.DateTime
+    field :confirmed_at, :naive_datetime
   end
 
   def changeset(user, params \\ :empty) do
     user
-    |> cast(params, @required_params, @optional_params)
+    |> cast(params, @required_params ++ @optional_params)
+    |> validate_required(@required_params)
   end
 end

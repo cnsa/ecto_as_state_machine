@@ -9,7 +9,7 @@ defmodule EctoStateMachine.UserWithInitial do
         name:     :confirm,
         from:     [:unconfirmed],
         to:       :confirmed,
-        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: Ecto.DateTime.utc) end
+        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: DateTime.utc_now |> DateTime.to_naive) end
       ], [
         name:     :block,
         from:     [:confirmed, :admin],
@@ -19,8 +19,7 @@ defmodule EctoStateMachine.UserWithInitial do
         from:     [:confirmed],
         to:       :admin
       ]
-    ],
-    repo: EctoStateMachine.TestRepo
+    ]
 
   schema "users" do
     field :state, :string

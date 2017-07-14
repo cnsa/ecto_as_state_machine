@@ -18,6 +18,23 @@ defmodule EctoStateMachineTest do
   end
 
   describe "states" do
+
+    def cs_user_error(context, method, value, true = _tuple) do
+       {:error, cs} = cs_user_error(context, method, value, false)
+       cs
+    end
+    def cs_user_error(context, method, value, _) do
+      apply(User, method, [context[value]])
+    end
+
+    def cs_user_initial_error(context, method, value, true = _tuple) do
+       {:error, cs} = cs_user_initial_error(context, method, value, false)
+       cs
+    end
+    def cs_user_initial_error(context, method,  value, _) do
+      apply(UserWithInitial, method, [context[value]])
+    end
+
     context "without initial" do
       it "#state", context do
         state(context)
@@ -92,11 +109,11 @@ defmodule EctoStateMachineTest do
         model = User.confirm!(context[:unconfirmed_user])
         assert model.state == "confirmed"
 
-        check_confirm_errors(context)
+        check_confirm_errors(context, :confirm!, true)
       end
 
       it "#confirm! with changeset", context do
-        model = User.changeset(context[:unconfirmed_user], %{confirmed_at: Ecto.DateTime.utc})
+        model = User.changeset(context[:unconfirmed_user], %{confirmed_at: DateTime.utc_now |> DateTime.to_naive})
         |> User.confirm!
         assert model.state == "confirmed"
       end
@@ -109,35 +126,18 @@ defmodule EctoStateMachineTest do
       end
 
       it "#confirm with changeset", context do
-        cs = User.changeset(context[:unconfirmed_user], %{confirmed_at: Ecto.DateTime.utc})
+        cs = User.changeset(context[:unconfirmed_user], %{confirmed_at: DateTime.utc_now |> DateTime.to_naive})
         |> User.confirm
         assert cs.changes.state == "confirmed"
       end
 
-      defp check_confirm_errors(context, method \\ :confirm!) do
-        assert_raise RuntimeError, "You can't move state from :admin to :confirmed", fn ->
-          apply(UserWithInitial, method, [context[:initial_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :admin to :confirmed", fn ->
-          apply(UserWithInitial, method, [context[:not_found_state]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :nil to :confirmed", fn ->
-          apply(User, method, [context[:initial_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :confirmed to :confirmed", fn ->
-          apply(User, method, [context[:confirmed_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :blocked to :confirmed", fn ->
-          apply(User, method, [context[:blocked_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :admin to :confirmed", fn ->
-          apply(User, method, [context[:admin]])
-        end
+      defp check_confirm_errors(context, method \\ :confirm!, is_raise \\ false) do
+        refute cs_user_initial_error(context, method, :initial_user, is_raise).valid?
+        refute cs_user_initial_error(context, method, :not_found_state, is_raise).valid?
+        refute cs_user_error(context, method, :initial_user, is_raise).valid?
+        refute cs_user_error(context, method, :confirmed_user, is_raise).valid?
+        refute cs_user_error(context, method, :blocked_user, is_raise).valid?
+        refute cs_user_error(context, method, :admin, is_raise).valid?
       end
     end
 
@@ -149,7 +149,7 @@ defmodule EctoStateMachineTest do
         model = User.block!(context[:admin])
         assert model.state == "blocked"
 
-        check_block_errors(context)
+        check_block_errors(context, :block!, true)
       end
 
       it "#block! with initials", context do
@@ -178,26 +178,12 @@ defmodule EctoStateMachineTest do
         assert cs.changes.state == "blocked"
       end
 
-      defp check_block_errors(context, method \\ :block!) do
-        assert_raise RuntimeError, "You can't move state from :unconfirmed to :blocked", fn ->
-          apply(UserWithInitial, method, [context[:unconfirmed_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :blocked to :blocked", fn ->
-          apply(UserWithInitial, method, [context[:blocked_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :nil to :blocked", fn ->
-          apply(User, method, [context[:initial_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :unconfirmed to :blocked", fn ->
-          apply(User, method, [context[:unconfirmed_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :blocked to :blocked", fn ->
-          apply(User, method, [context[:blocked_user]])
-        end
+      defp check_block_errors(context, method \\ :block!, is_raise \\ false) do
+        refute cs_user_initial_error(context, method, :unconfirmed_user, is_raise).valid?
+        refute cs_user_initial_error(context, method, :blocked_user, is_raise).valid?
+        refute cs_user_error(context, method, :initial_user, is_raise).valid?
+        refute cs_user_error(context, method, :unconfirmed_user, is_raise).valid?
+        refute cs_user_error(context, method, :blocked_user, is_raise).valid?
       end
     end
 
@@ -206,11 +192,11 @@ defmodule EctoStateMachineTest do
         model = User.make_admin!(context[:confirmed_user])
         assert model.state == "admin"
 
-        check_admin_errors(context)
+        check_admin_errors(context, :make_admin!, true)
       end
 
       it "#make_admin! with changeset", context do
-        date = Ecto.DateTime.utc
+        date = DateTime.utc_now |> DateTime.to_naive
         model = User.changeset(context[:confirmed_user], %{confirmed_at: date})
         |> User.make_admin!
         assert model.state        == "admin"
@@ -225,37 +211,20 @@ defmodule EctoStateMachineTest do
       end
 
       it "#make_admin with changeset", context do
-        date = Ecto.DateTime.utc
+        date = DateTime.utc_now |> DateTime.to_naive
         cs = User.changeset(context[:confirmed_user], %{confirmed_at: date})
         |> User.make_admin
         assert cs.changes.state        == "admin"
         assert cs.changes.confirmed_at == date
       end
 
-      defp check_admin_errors(context, method \\ :make_admin!) do
-        assert_raise RuntimeError, "You can't move state from :admin to :admin", fn ->
-          apply(UserWithInitial, method, [context[:initial_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :admin to :admin", fn ->
-          apply(UserWithInitial, method, [context[:not_found_state]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :nil to :admin", fn ->
-          apply(User, method, [context[:initial_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :unconfirmed to :admin", fn ->
-          apply(User, method, [context[:unconfirmed_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :blocked to :admin", fn ->
-          apply(User, method, [context[:blocked_user]])
-        end
-
-        assert_raise RuntimeError, "You can't move state from :admin to :admin", fn ->
-          apply(User, method, [context[:admin]])
-        end
+      defp check_admin_errors(context, method \\ :make_admin!, is_raise \\ false) do
+        refute cs_user_initial_error(context, method, :initial_user, is_raise).valid?
+        refute cs_user_initial_error(context, method, :not_found_state, is_raise).valid?
+        refute cs_user_error(context, method, :initial_user, is_raise).valid?
+        refute cs_user_error(context, method, :unconfirmed_user, is_raise).valid?
+        refute cs_user_error(context, method, :blocked_user, is_raise).valid?
+        refute cs_user_error(context, method, :admin, is_raise).valid?
       end
     end
   end

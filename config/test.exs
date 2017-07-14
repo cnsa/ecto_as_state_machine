@@ -1,10 +1,17 @@
 use Mix.Config
 
+config :ecto_state_machine,
+  ecto_repos: [EctoStateMachine.TestRepo]
+
 # Configure your database
 config :ecto_state_machine, EctoStateMachine.TestRepo,
-  hostname: "localhost",
-  database: "ecto_state_machine_test",
   adapter: Ecto.Adapters.Postgres,
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  username: System.get_env("USER"),
+  password: "",
+  database: "ecto_state_machine_test",
+  pool_size: 10,
+  port: 5432,
+  priv: "priv/test_repo"
 
 config :logger, level: :warn
