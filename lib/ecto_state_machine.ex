@@ -1,7 +1,8 @@
 defmodule EctoStateMachine do
   defmacro __using__(opts) do
     app     = Mix.Project.config[:app]
-    repo    = Application.get_env(app, :ecto_repos) |> List.first
+    default_repo = Application.get_env(app, :ecto_repos, []) |> List.first
+    repo    = Keyword.get(opts, :repo, default_repo)
     states  = Keyword.get(opts, :states)
     initial = Keyword.get(opts, :initial)
     events  = Keyword.get(opts, :events)
