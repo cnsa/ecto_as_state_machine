@@ -1,14 +1,15 @@
-defmodule Dummy.User do
-  use Dummy.Web, :model
+defmodule EctoStateMachine.UserWithInitial do
+  use Ecto.Schema
 
   use EctoStateMachine,
     states: [:unconfirmed, :confirmed, :blocked, :admin],
+    initial: :admin,
     events: [
       [
         name:     :confirm,
         from:     [:unconfirmed],
         to:       :confirmed,
-        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: Ecto.DateTime.utc) end
+        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: DateTime.utc_now |> DateTime.to_naive) end
       ], [
         name:     :block,
         from:     [:confirmed, :admin],
@@ -18,8 +19,7 @@ defmodule Dummy.User do
         from:     [:confirmed],
         to:       :admin
       ]
-    ],
-    repo: Dummy.Repo
+    ]
 
   schema "users" do
     field :state, :string

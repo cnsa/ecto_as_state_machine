@@ -8,21 +8,21 @@ defmodule EctoStateMachine.Mixfile do
     [
       app: :ecto_state_machine,
       version: @version,
-      elixir: "~> 1.2",
+      elixir: "~> 1.3",
       elixirc_paths: elixirc_paths(Mix.env),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps,
+      deps: deps(),
       source_url: @project_url,
       homepage_url: @project_url,
       description: "State machine pattern for Ecto. I tried to make it similar as possible to ruby's gem 'aasm'",
-      package: package
+      package: package()
    ]
   end
 
-  defp elixirc_paths(:test), do: elixirc_paths ++ ["test/support", "test/dummy"]
-  defp elixirc_paths(_), do: elixirc_paths
-  defp elixirc_paths, do: ["lib"]
+  defp elixirc_paths(:test), do: elixirc_paths() ++ ["test/support"]
+  defp elixirc_paths(_),     do: elixirc_paths()
+  defp elixirc_paths(),        do: ["lib"]
 
   def application do
     [
@@ -30,17 +30,17 @@ defmodule EctoStateMachine.Mixfile do
     ]
   end
 
-  def app_list(:test), do: app_list ++ [:ecto, :postgrex, :ex_machina]
-  def app_list(_), do: app_list
-  def app_list, do: [:logger]
+  def app_list(:test), do: app_list() ++ [:ecto, :postgrex, :ex_machina]
+  def app_list(_),     do: app_list()
+  def app_list,        do: [:logger]
 
   defp deps do
     [
-     {:ecto, ">= 1.1.2 or >= 2.0.0"},
+     {:ecto, ">= 2.0.0"},
 
      {:postgrex,   ">= 0.0.0", only: :test},
-     {:ex_machina, "~> 1.0", github: "thoughtbot/ex_machina", only: :test},
-     {:ex_spec,    "~> 1.1.0 or ~> 2.0.0", only: :test}
+     {:ex_machina, "~> 2.0", only: :test},
+     {:ex_spec,    "~> 2.0.0", only: :test}
     ]
   end
 
@@ -48,7 +48,7 @@ defmodule EctoStateMachine.Mixfile do
     [
       name: :ecto_state_machine,
       files: ["lib/ecto_state_machine.ex", "mix.exs"],
-      maintainers: ["Alex Antonov"],
+      maintainers: ["Alexander Merkulov", "Alex Antonov"],
       licenses: ["Apache 2.0"],
       links: %{
         "GitHub"        => @project_url,
