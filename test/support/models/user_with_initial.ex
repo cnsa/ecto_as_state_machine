@@ -1,7 +1,7 @@
-defmodule EctoStateMachine.UserWithInitial do
+defmodule EctoAsStateMachine.UserWithInitial do
   use Ecto.Schema
 
-  use EctoStateMachine
+  use EctoAsStateMachine
 
   easm states: [:unconfirmed, :confirmed, :blocked, :admin],
     initial: :admin,

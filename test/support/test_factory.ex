@@ -1,6 +1,6 @@
-defmodule EctoStateMachine.TestFactory do
-  use ExMachina.Ecto, repo: EctoStateMachine.TestRepo
-  alias EctoStateMachine.{User, UserWithInitial}
+defmodule EctoAsStateMachine.TestFactory do
+  use ExMachina.Ecto, repo: EctoAsStateMachine.TestRepo
+  alias EctoAsStateMachine.{User, UserWithInitial}
 
   def user_factory do
     %User{

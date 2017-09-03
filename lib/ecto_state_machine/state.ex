@@ -1,4 +1,4 @@
-defmodule EctoStateMachine.State do
+defmodule EctoAsStateMachine.State do
   alias Ecto.Changeset
 
   def update(%{event: event, model: model, states: states, initial: initial, column: column}) do

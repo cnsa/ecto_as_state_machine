@@ -1,9 +1,9 @@
-defmodule EctoStateMachineTest do
-  use EctoStateMachine.EctoCase, async: true
+defmodule EctoAsStateMachineTest do
+  use EctoAsStateMachine.EctoCase, async: true
   use ExSpec, async: true
 
-  alias EctoStateMachine.{User, UserWithInitial}
-  import EctoStateMachine.TestFactory
+  alias EctoAsStateMachine.{User, UserWithInitial}
+  import EctoAsStateMachine.TestFactory
 
   setup_all do
     {

@@ -1,11 +1,11 @@
-defmodule EctoStateMachine.User do
+defmodule EctoAsStateMachine.User do
   use Ecto.Schema
   import Ecto.Changeset, only: [cast: 3, validate_required: 2]
 
   @required_params ~w()
   @optional_params ~w(state some confirmed_at)
 
-  use EctoStateMachine
+  use EctoAsStateMachine
 
   easm states: [:unconfirmed, :confirmed, :blocked, :admin],
     events: [

@@ -1,9 +1,9 @@
-defmodule EctoStateMachine.StateTest do
-  use EctoStateMachine.EctoCase, async: true
+defmodule EctoAsStateMachine.StateTest do
+  use EctoAsStateMachine.EctoCase, async: true
   use ExSpec, async: true
 
-  alias EctoStateMachine.{User, TestRepo}
-  import EctoStateMachine.TestFactory
+  alias EctoAsStateMachine.{User, TestRepo}
+  import EctoAsStateMachine.TestFactory
 
   @event [
     name:     :confirm,
@@ -30,12 +30,12 @@ defmodule EctoStateMachine.StateTest do
 
   describe ".update" do
     it "with success", context do
-      value = EctoStateMachine.State.update(%{event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
+      value = EctoAsStateMachine.State.update(%{event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
       assert match? %{changes: %{state: "confirmed"}}, value
     end
 
     it "with failure", context do
-      value = EctoStateMachine.State.update(%{event: [
+      value = EctoAsStateMachine.State.update(%{event: [
           name:     :confirm,
           from:     [:confirmed],
           to:       :confirmed,
@@ -49,13 +49,13 @@ defmodule EctoStateMachine.StateTest do
 
   describe ".update!" do
     it "with success", context do
-      EctoStateMachine.State.update!(%{repo: TestRepo, event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
+      EctoAsStateMachine.State.update!(%{repo: TestRepo, event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
       user = TestRepo.get(User, context[:unconfirmed_user].id)
       assert match? %{state: "confirmed"}, user
     end
 
     it "with failure", context do
-      value = EctoStateMachine.State.update!(%{repo: TestRepo, event: [
+      value = EctoAsStateMachine.State.update!(%{repo: TestRepo, event: [
         name:     :confirm,
         from:     [:confirmed],
         to:       :confirmed,
@@ -69,14 +69,14 @@ defmodule EctoStateMachine.StateTest do
 
   describe ".can_event?" do
     it "when true", context do
-      assert EctoStateMachine.State.can_event?(%{repo: TestRepo,
+      assert EctoAsStateMachine.State.can_event?(%{repo: TestRepo,
         event: @event, states: @states,
         model: context[:unconfirmed_user],
         initial: @initial})
     end
 
     it "when false", context do
-      refute EctoStateMachine.State.can_event?(%{repo: TestRepo,
+      refute EctoAsStateMachine.State.can_event?(%{repo: TestRepo,
         event: @event, states: @states,
         model: context[:blocked_user],
         initial: @initial})
@@ -85,7 +85,7 @@ defmodule EctoStateMachine.StateTest do
 
   describe ".is_state?" do
     it "when true", context do
-      assert EctoStateMachine.State.is_state?(%{
+      assert EctoAsStateMachine.State.is_state?(%{
         states: @states,
         model: context[:confirmed_user],
         initial: @initial,
@@ -93,7 +93,7 @@ defmodule EctoStateMachine.StateTest do
     end
 
     it "when false", context do
-      refute EctoStateMachine.State.is_state?(%{
+      refute EctoAsStateMachine.State.is_state?(%{
         states: @states,
         model: context[:unconfirmed_user],
         initial: @initial,
@@ -103,17 +103,17 @@ defmodule EctoStateMachine.StateTest do
 
   describe ".state_with_initial" do
     it "with initial", context do
-      value = EctoStateMachine.State.state_with_initial(nil, %{event: @event, states: @states, model: context[:unconfirmed_user], initial: "confirmed"})
+      value = EctoAsStateMachine.State.state_with_initial(nil, %{event: @event, states: @states, model: context[:unconfirmed_user], initial: "confirmed"})
       assert match? "confirmed", value
     end
 
     it "with state", context do
-      value = EctoStateMachine.State.state_with_initial("confirmed", %{event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
+      value = EctoAsStateMachine.State.state_with_initial("confirmed", %{event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
       assert match? "confirmed", value
     end
 
     it "without initial", context do
-      value = EctoStateMachine.State.state_with_initial(nil, %{event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
+      value = EctoAsStateMachine.State.state_with_initial(nil, %{event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
       assert match? nil, value
     end
   end

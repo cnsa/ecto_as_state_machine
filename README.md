@@ -1,23 +1,25 @@
-# EctoStateMachine
+# EctoAsStateMachine
 
-[![Build Status](https://travis-ci.org/cnsa/your_state_machine.svg?branch=add-ci)](https://travis-ci.org/cnsa/your_state_machine)
-![badge](https://img.shields.io/hexpm/v/ecto_state_machine.svg)
+[![Build Status](https://travis-ci.org/cnsa/ecto_as_state_machine.svg?branch=master)](https://travis-ci.org/cnsa/ecto_as_state_machine)
+![badge](https://img.shields.io/hexpm/v/ecto_as_state_machine.svg)
 
 This package allows to use [finite state machine pattern](https://en.wikipedia.org/wiki/Finite-state_machine) in Ecto. Specify:
 
 * states
 * events
-* transitions
+* column ([optional](#custom-column-name))
 
 and go:
 
 ``` elixir
 defmodule User do
   use Web, :model
-
-  use EctoStateMachine,
+  
+  use EctoAsStateMachine
+  
+  easm column: :state,
+    initial: :unconfirmed, 
     states: [:unconfirmed, :confirmed, :blocked, :admin],
-    initial: :unconfirmed,
     events: [
       [
         name:     :confirm,
@@ -61,28 +63,45 @@ new_user = User.make_admin!(new_user)
 User.admin?(new_user) # => true
 ```
 
-You can check out whole `test/dummy` directory to inspect how to organize sample app.
+## Custom column name
+
+`ecto_as_state_machine` uses `state` database column by default. You can specify
+`column` option to change it. Or additional column, like this:
+
+``` elixir
+defmodule User do
+  use Web, :model
+  
+  use EctoStateMachine
+  
+  easm initial: :some,
+    # bla-bla-bla
+    
+  easm column: :rules,
+    # bla-bla-bla
+end
+```
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-  1. Add ecto_state_machine to your list of dependencies in `mix.exs`:
+  1. Add ecto_as_state_machine to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:ecto_state_machine, "~> 0.0.4"}]
+          [{:ecto_as_state_machine, "~> 1.0"}]
         end
 
-  2. Ensure ecto_state_machine is started before your application:
+  2. Ensure ecto_as_state_machine is started before your application:
 
         def application do
-          [applications: [:ecto_state_machine]]
+          [applications: [:ecto_as_state_machine]]
         end
 
 ## Contributions
 
-1. Clone repo: `git clone https://github.com/asiniy/ecto_state_machine.git`
-1. Open directory `cd ecto_state_machine`
+1. Clone repo: `git clone https://github.com/cnsa/ecto_as_state_machine.git`
+1. Open directory `cd ecto_as_state_machine`
 1. Install dependencies `mix deps.get`
 1. Add feature
 1. Test it: `mix test`

@@ -1,2 +1,2 @@
-{:ok, _} = EctoStateMachine.TestRepo.start_link
+{:ok, _} = EctoAsStateMachine.TestRepo.start_link
 ExUnit.start()

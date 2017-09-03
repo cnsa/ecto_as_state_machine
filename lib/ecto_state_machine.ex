@@ -1,4 +1,4 @@
-defmodule EctoStateMachine do
+defmodule EctoAsStateMachine do
   defmodule Helpers do
     defmacro easm(opts) do
       app          = Mix.Project.config[:app]
@@ -43,7 +43,7 @@ defmodule EctoStateMachine do
           end
 
           def unquote(event[:name])(model) do
-            EctoStateMachine.State.update(%{
+            EctoAsStateMachine.State.update(%{
               event: unquote(event),
               model: model,
               column: unquote(column),
@@ -53,7 +53,7 @@ defmodule EctoStateMachine do
           end
 
           def unquote(:"#{event[:name]}!")(model) do
-            EctoStateMachine.State.update!(%{
+            EctoAsStateMachine.State.update!(%{
               repo: unquote(repo),
               event: unquote(event),
               model: model,
@@ -64,7 +64,7 @@ defmodule EctoStateMachine do
           end
 
           def unquote(:"can_#{event[:name]}?")(model) do
-            EctoStateMachine.State.can_event?(%{
+            EctoAsStateMachine.State.can_event?(%{
               event: unquote(event),
               model: model,
               column: unquote(column),
@@ -77,7 +77,7 @@ defmodule EctoStateMachine do
         valid_states
         |> Enum.each(fn(state) ->
           def unquote(:"#{state}?")(model) do
-            EctoStateMachine.State.is_state?(%{
+            EctoAsStateMachine.State.is_state?(%{
               model: model,
               column: unquote(column),
               state: unquote(state),
@@ -88,7 +88,7 @@ defmodule EctoStateMachine do
         end)
 
         def unquote(column)(model) do
-          "#{EctoStateMachine.State.state_with_initial(Map.get(model, unquote(column)), %{states: unquote(valid_states), initial: unquote(initial)})}"
+          "#{EctoAsStateMachine.State.state_with_initial(Map.get(model, unquote(column)), %{states: unquote(valid_states), initial: unquote(initial)})}"
         end
       end
     end
@@ -97,7 +97,7 @@ defmodule EctoStateMachine do
   @doc false
   defmacro __using__(_) do
     quote do
-      import EctoStateMachine.Helpers
+      import EctoAsStateMachine.Helpers
     end
   end
 end

@@ -1,12 +1,12 @@
-defmodule EctoStateMachine.Mixfile do
+defmodule EctoAsStateMachine.Mixfile do
   use Mix.Project
 
-  @project_url "https://github.com/asiniy/ecto_state_machine"
+  @project_url "https://github.com/cnsa/ecto_as_state_machine"
   @version "0.0.4"
 
   def project do
     [
-      app: :ecto_state_machine,
+      app: :ecto_as_state_machine,
       version: @version,
       elixir: "~> 1.3",
       elixirc_paths: elixirc_paths(Mix.env),
@@ -47,13 +47,12 @@ defmodule EctoStateMachine.Mixfile do
 
   defp package do
     [
-      name: :ecto_state_machine,
-      files: ["lib/ecto_state_machine.ex", "mix.exs"],
-      maintainers: ["Alexander Merkulov", "Alex Antonov"],
-      licenses: ["Apache 2.0"],
+      name: :ecto_as_state_machine,
+      files: ["lib/ecto_as_state_machine.ex", "lib/ecto_as_state_machine/state.ex", "mix.exs"],
+      maintainers: ["Alexander Merkulov"],
+      licenses: ["MIT"],
       links: %{
-        "GitHub"        => @project_url,
-        "Author's blog" => "http://asiniy.github.io/"
+        "GitHub" => @project_url
       }
     ]
   end
