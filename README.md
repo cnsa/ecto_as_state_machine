@@ -75,7 +75,7 @@ User.admin?(new_user) # => true
 defmodule User do
   use Web, :model
   
-  use EctoStateMachine
+  use EctoAsStateMachine
   
   easm initial: :some,
     # bla-bla-bla
