@@ -133,3 +133,6 @@ Once you've made your additions and mix test passes, go ahead and open a PR!
 - [x] Write bang! methods which are raising exception instead of returning invalid changeset
 - [ ] Rewrite spaghetti description in README
 
+## License
+
+[MIT](LICENSE.txt)
