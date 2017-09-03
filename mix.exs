@@ -41,6 +41,8 @@ defmodule EctoAsStateMachine.Mixfile do
 
      {:postgrex,   ">= 0.0.0", only: :test},
      {:ex_machina, "~> 2.0", only: :test},
+     {:ex_doc, "~> 0.11", only: :dev, runtime: false},
+     {:earmark, ">= 0.0.0", only: :dev},
      {:ex_spec,    "~> 2.0", only: :test}
     ]
   end
@@ -57,7 +59,13 @@ defmodule EctoAsStateMachine.Mixfile do
     ]
   end
 
+  defp git_tag(_args) do
+    System.cmd "git", ["tag", "v" <> Mix.Project.config[:version]]
+    System.cmd "git", ["push", "--tags"]
+  end
+
   defp aliases do
-    ["test": ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate", "test"]]
+    [test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate", "test"],
+     publish: ["hex.publish", "hex.publish docs", &git_tag/1], tag: [&git_tag/1]]
   end
 end
