@@ -1,4 +1,7 @@
-# Ecto state machine
+# EctoStateMachine
+
+[![Build Status](https://travis-ci.org/cnsa/your_state_machine.svg?branch=add-ci)](https://travis-ci.org/cnsa/your_state_machine)
+![badge](https://img.shields.io/hexpm/v/ecto_state_machine.svg)
 
 This package allows to use [finite state machine pattern](https://en.wikipedia.org/wiki/Finite-state_machine) in Ecto. Specify:
 
@@ -81,6 +84,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 1. Clone repo: `git clone https://github.com/asiniy/ecto_state_machine.git`
 1. Open directory `cd ecto_state_machine`
 1. Install dependencies `mix deps.get`
+1. Add feature
 1. Test it: `mix test`
 
 Once you've made your additions and mix test passes, go ahead and open a PR!
