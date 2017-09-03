@@ -1,6 +1,7 @@
 {
   "repo_token": "I6UZnydZG9366UO5QKPddg08qauDtP0sI",
   "skip_files": [
-    "test"
+    "test",
+    "lib/ecto_as_state_machine.ex"
   ]
 }
