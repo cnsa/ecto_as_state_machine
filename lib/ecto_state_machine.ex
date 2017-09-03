@@ -1,19 +1,25 @@
 defmodule EctoStateMachine do
   defmacro __using__(opts) do
-    app     = Mix.Project.config[:app]
+    app          = Mix.Project.config[:app]
     default_repo = Application.get_env(app, :ecto_repos, []) |> List.first
+
     repo    = Keyword.get(opts, :repo, default_repo)
     states  = Keyword.get(opts, :states)
     initial = Keyword.get(opts, :initial)
     events  = Keyword.get(opts, :events)
       |> Enum.map(fn(event) ->
-        Keyword.put_new(event, :callback, quote do: fn(model) -> model end)
+        Keyword.put_new(event, :callback, quote(do: fn(model) -> model end))
       end)
       |> Enum.map(fn(event) ->
         Keyword.update!(event, :callback, &Macro.escape/1)
       end)
 
-    quote bind_quoted: [states: states, events: events, repo: repo, initial: initial ] do
+    quote bind_quoted: [
+      states: states,
+      events: events,
+      repo: repo,
+      initial: initial
+    ] do
       alias Ecto.Changeset
 
       events

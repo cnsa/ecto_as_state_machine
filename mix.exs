@@ -12,6 +12,7 @@ defmodule EctoStateMachine.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
+      aliases: aliases(),
       deps: deps(),
       source_url: @project_url,
       homepage_url: @project_url,
@@ -36,11 +37,11 @@ defmodule EctoStateMachine.Mixfile do
 
   defp deps do
     [
-     {:ecto, ">= 2.0.0"},
+     {:ecto, "~> 2.0"},
 
      {:postgrex,   ">= 0.0.0", only: :test},
      {:ex_machina, "~> 2.0", only: :test},
-     {:ex_spec,    "~> 2.0.0", only: :test}
+     {:ex_spec,    "~> 2.0", only: :test}
     ]
   end
 
@@ -55,5 +56,9 @@ defmodule EctoStateMachine.Mixfile do
         "Author's blog" => "http://asiniy.github.io/"
       }
     ]
+  end
+
+  defp aliases do
+    ["test": ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate", "test"]]
   end
 end
