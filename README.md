@@ -90,16 +90,22 @@ end
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
   1. Add ecto_as_state_machine to your list of dependencies in `mix.exs`:
+  
+```elixir
+def deps do
+  [{:ecto_as_state_machine, "~> 1.0"}]
+end
 
-        def deps do
-          [{:ecto_as_state_machine, "~> 1.0"}]
-        end
+```
 
   2. Ensure ecto_as_state_machine is started before your application:
 
-        def application do
-          [applications: [:ecto_as_state_machine]]
-        end
+```elixir
+def application do
+  [applications: [:ecto_as_state_machine]]
+end
+
+```   
 
 ## Contributions
 

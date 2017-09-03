@@ -59,7 +59,7 @@ defmodule EctoAsStateMachine.Mixfile do
   defp package do
     [
       name: :ecto_as_state_machine,
-      files: ["lib/ecto_as_state_machine.ex", "lib/ecto_as_state_machine/state.ex", "mix.exs"],
+      files: ["lib/ecto_as_state_machine.ex", "lib/ecto_as_state_machine/state.ex", "mix.exs", "README.md"],
       maintainers: ["Alexander Merkulov"],
       licenses: ["MIT"],
       links: %{
