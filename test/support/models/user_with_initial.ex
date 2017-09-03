@@ -1,8 +1,9 @@
 defmodule EctoStateMachine.UserWithInitial do
   use Ecto.Schema
 
-  use EctoStateMachine,
-    states: [:unconfirmed, :confirmed, :blocked, :admin],
+  use EctoStateMachine
+
+  easm states: [:unconfirmed, :confirmed, :blocked, :admin],
     initial: :admin,
     events: [
       [
@@ -21,7 +22,28 @@ defmodule EctoStateMachine.UserWithInitial do
       ]
     ]
 
+  easm states: [:unfirmed, :firmed, :cked, :min],
+    column: :some,
+    initial: :min,
+    events: [
+      [
+        name:     :firm,
+        from:     [:unfirmed],
+        to:       :firmed,
+        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: DateTime.utc_now |> DateTime.to_naive) end
+      ], [
+        name:     :ck,
+        from:     [:firmed, :min],
+        to:       :cked
+      ], [
+        name:     :make_min,
+        from:     [:firmed],
+        to:       :min
+      ]
+    ]
+
   schema "users" do
     field :state, :string
+    field :some, :string
   end
 end

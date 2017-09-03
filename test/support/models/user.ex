@@ -3,10 +3,11 @@ defmodule EctoStateMachine.User do
   import Ecto.Changeset, only: [cast: 3, validate_required: 2]
 
   @required_params ~w()
-  @optional_params ~w(state confirmed_at)
+  @optional_params ~w(state some confirmed_at)
 
-  use EctoStateMachine,
-    states: [:unconfirmed, :confirmed, :blocked, :admin],
+  use EctoStateMachine
+
+  easm states: [:unconfirmed, :confirmed, :blocked, :admin],
     events: [
       [
         name:     :confirm,
@@ -24,8 +25,28 @@ defmodule EctoStateMachine.User do
       ]
     ]
 
+  easm states: [:unfirmed, :firmed, :cked, :min],
+    column: :some,
+    events: [
+      [
+        name:     :firm,
+        from:     [:unfirmed],
+        to:       :firmed,
+        callback: fn(model) -> Ecto.Changeset.change(model, confirmed_at: DateTime.utc_now |> DateTime.to_naive) end
+      ], [
+        name:     :ck,
+        from:     [:firmed, :min],
+        to:       :cked
+      ], [
+        name:     :make_min,
+        from:     [:firmed],
+        to:       :min
+      ]
+    ]
+
   schema "users" do
     field :state, :string
+    field :some, :string
     field :confirmed_at, :naive_datetime
   end
 
