@@ -27,7 +27,7 @@ defmodule EctoAsStateMachine.Mixfile do
 
   defp elixirc_paths(:test), do: elixirc_paths() ++ ["test/support"]
   defp elixirc_paths(_),     do: elixirc_paths()
-  defp elixirc_paths(),        do: ["lib"]
+  defp elixirc_paths(),      do: ["lib"]
 
   def application do
     [
