@@ -1,6 +1,8 @@
 language: elixir
 
 matrix:
+  allow_failures:
+    - elixir: 1.3.4
   include:
     - otp_release: 19.0
       elixir: 1.3.4
