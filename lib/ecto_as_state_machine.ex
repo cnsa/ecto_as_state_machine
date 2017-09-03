@@ -26,8 +26,6 @@ defmodule EctoAsStateMachine do
         initial: initial,
         function_prefix: function_prefix
       ] do
-        alias Ecto.Changeset
-
         def unquote(:"#{function_prefix}states")() do
           unquote(valid_states)
         end
