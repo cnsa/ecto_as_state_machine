@@ -17,7 +17,11 @@ defmodule EctoAsStateMachine.Mixfile do
       source_url: @project_url,
       homepage_url: @project_url,
       description: "State machine pattern for Ecto. I tried to make it similar as possible to ruby's gem 'aasm'",
-      package: package()
+      package: package(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: cli_env_for(:test, [
+        "coveralls", "coveralls.detail", "coveralls.html", "coveralls.post",
+      ]),
    ]
   end
 
@@ -37,14 +41,19 @@ defmodule EctoAsStateMachine.Mixfile do
 
   defp deps do
     [
-     {:ecto, "~> 2.0"},
+      {:ecto, "~> 2.0"},
 
-     {:postgrex,   ">= 0.0.0", only: :test},
-     {:ex_machina, "~> 2.0", only: :test},
-     {:ex_doc, "~> 0.11", only: :dev, runtime: false},
-     {:earmark, ">= 0.0.0", only: :dev},
-     {:ex_spec,    "~> 2.0", only: :test}
+      {:postgrex, ">= 0.0.0", only: :test},
+      {:ex_machina, "~> 2.0", only: :test},
+      {:ex_doc, "~> 0.11", only: :dev, runtime: false},
+      {:earmark, ">= 0.0.0", only: :dev},
+      {:ex_spec, "~> 2.0", only: :test},
+      {:excoveralls, "~> 0.5", only: :test},
     ]
+  end
+
+  defp cli_env_for(env, tasks) do
+    Enum.reduce(tasks, [], fn(key, acc) -> Keyword.put(acc, :"#{key}", env) end)
   end
 
   defp package do
@@ -66,6 +75,7 @@ defmodule EctoAsStateMachine.Mixfile do
 
   defp aliases do
     [test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate", "test"],
-     publish: ["hex.publish", "hex.publish docs", &git_tag/1], tag: [&git_tag/1]]
+     publish: ["hex.publish", "hex.publish docs", &git_tag/1],
+     tag: [&git_tag/1]]
   end
 end
