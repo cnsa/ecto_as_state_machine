@@ -29,61 +29,48 @@ defmodule EctoStateMachine do
         end
 
         def unquote(event[:name])(model) do
-          model
-          |> Changeset.change(%{state: "#{unquote(event[:to])}"})
-          |> unquote(event[:callback]).()
-          |> _validate_state_transition(unquote(event), _valid_model(model))
+          EctoStateMachine.State.update(%{
+            event: unquote(event),
+            model: model,
+            states: unquote(states),
+            initial: unquote(initial)
+          })
         end
 
         def unquote(:"#{event[:name]}!")(model) do
-          case unquote(event[:name])(model) |> unquote(repo).update do
-            { :ok, new_model } -> new_model
-            e -> e
-          end
+          EctoStateMachine.State.update!(%{
+            repo: unquote(repo),
+            event: unquote(event),
+            model: model,
+            states: unquote(states),
+            initial: unquote(initial)
+          })
         end
 
         def unquote(:"can_#{event[:name]}?")(model) do
-          :"#{state_with_initial(model.state)}" in unquote(event[:from])
+          EctoStateMachine.State.can_event?(%{
+            event: unquote(event),
+            model: model,
+            states: unquote(states),
+            initial: unquote(initial)
+          })
         end
       end)
 
       states
       |> Enum.each(fn(state) ->
         def unquote(:"#{state}?")(model) do
-          :"#{state_with_initial(model.state)}" == unquote(state)
+          EctoStateMachine.State.is_state?(%{
+            model: model,
+            state: unquote(state),
+            states: unquote(states),
+            initial: unquote(initial)
+          })
         end
       end)
 
-      defp unquote(:_valid_model)(%Ecto.Changeset{} = cs) do
-        case cs do
-          %{ data:  model } -> model
-          %{ model: model } -> model
-        end
-      end
-      defp unquote(:_valid_model)(model), do: model
-
-      defp unquote(:_validate_state_transition)(changeset, event, model) do
-        state = state_with_initial(model.state)
-
-        if :"#{state}" in event[:from] do
-          changeset
-        else
-          changeset
-          |> Changeset.add_error("state",
-             "You can't move state from :#{state || "nil"} to :#{event[:to]}")
-        end
-      end
-
       def unquote(:state)(model) do
-        "#{state_with_initial(model.state)}"
-      end
-
-      defp state_with_initial(state) do
-        if :"#{state}" in unquote(states) do
-          state
-        else
-          unquote(initial)
-        end
+        "#{EctoStateMachine.State.state_with_initial(model.state, %{states: unquote(states), initial: unquote(initial)})}"
       end
     end
   end
