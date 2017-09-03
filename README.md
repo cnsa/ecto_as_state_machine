@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/cnsa/ecto_as_state_machine.svg?branch=master)](https://travis-ci.org/cnsa/ecto_as_state_machine)
 [![Coverage Status](https://coveralls.io/repos/github/cnsa/ecto_as_state_machine/badge.svg?branch=master)](https://coveralls.io/github/cnsa/ecto_as_state_machine?branch=master)
-[![Hex.pm](https://img.shields.io/hexpm/v/ecto_as_state_machine.svg?maxAge=2592000)](https://hex.pm/packages/ecto_as_state_machine)
+[![Hex.pm](https://img.shields.io/hexpm/v/ecto_as_state_machine.svg)](ecto_as_state_machine)
 [![Deps Status](https://beta.hexfaktor.org/badge/prod/github/cnsa/ecto_as_state_machine.svg)](https://beta.hexfaktor.org/github/cnsa/ecto_as_state_machine)
 
 
