@@ -17,6 +17,7 @@ services:
 sudo: false # to use faster container based build environment
 
 script:
+  - MIX_ENV=test mix credo
   - MIX_ENV=test mix coveralls.travis
 
 cache:

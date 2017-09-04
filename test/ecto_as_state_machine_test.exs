@@ -5,6 +5,8 @@ defmodule EctoAsStateMachineTest do
   alias EctoAsStateMachine.{User, UserWithInitial}
   import EctoAsStateMachine.TestFactory
 
+  doctest EctoAsStateMachine.Helpers
+
   setup_all do
     {
       :ok,

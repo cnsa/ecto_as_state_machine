@@ -48,6 +48,7 @@ defmodule EctoAsStateMachine.Mixfile do
       {:ex_doc, "~> 0.11", only: :dev, runtime: false},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_spec, "~> 2.0", only: :test},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.5", only: :test},
     ]
   end
