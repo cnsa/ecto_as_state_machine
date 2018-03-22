@@ -12,6 +12,22 @@ defmodule EctoAsStateMachine.StateTest do
     callback: nil
   ]
 
+  @events [
+    [
+      name:     :confirm,
+      from:     [:unconfirmed],
+      to:       :confirmed
+    ], [
+      name:     :block,
+      from:     [:confirmed],
+      to:       :blocked
+    ], [
+      name:     :make_admin,
+      from:     [:blocked],
+      to:       :admin
+    ]
+  ]
+
   @states [:unconfirmed, :confirmed, :blocked, :admin]
 
   @initial nil
@@ -42,6 +58,20 @@ defmodule EctoAsStateMachine.StateTest do
           callback: nil
         ], states: @states,
         model: context[:blocked_user],
+        initial: @initial})
+      assert match?(%{valid?: false}, value)
+    end
+  end
+
+  describe ".next_state" do
+    it "with success", context do
+      value = EctoAsStateMachine.State.next_state(%{events: @events, states: @states, model: context[:unconfirmed_user], initial: @initial})
+      assert match? %{changes: %{state: "confirmed"}}, value
+    end
+
+    it "with failure", context do
+      value = EctoAsStateMachine.State.update(%{events: @events, states: @states,
+        model: context[:admin],
         initial: @initial})
       assert match?(%{valid?: false}, value)
     end

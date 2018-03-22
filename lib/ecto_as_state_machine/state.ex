@@ -34,6 +34,19 @@ defmodule EctoAsStateMachine.State do
     end
   end
 
+  @spec next_state(%{events: List.t(), model: Map.t(), states: List.t(), initial: String.t(), column: atom}) :: term | %{valid: false}
+  def next_state(%{events: events, model: model} = config) do
+    event =
+      events
+      |> Enum.find(fn(e) -> can_event?(Map.put_new(config, :event, e)) end)
+
+    if event do
+      update(Map.put_new(config, :event, event))
+    else
+      model
+    end
+  end
+
   @spec can_event?(%{event: List.t(), model: Map.t(), column: atom}) :: true | false
   def can_event?(%{model: model, event: event, column: column} = config) do
     :"#{state_with_initial(Map.get(model, column), config)}" in event[:from]
