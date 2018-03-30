@@ -141,6 +141,9 @@ end
   
 user = Repo.get_by(User, id: 1) # state: unconfirmed
 new_user = User.next_state(user) # state: confirmed
+new_user = User.next_state(new_user) # state: blocked
+new_user = User.next_state(new_user) # state: admin
+new_user = User.next_state(new_user) # state: admin
 ```
 
 ## Contributions
