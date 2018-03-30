@@ -45,12 +45,12 @@ defmodule EctoAsStateMachine.StateTest do
   end
 
   describe ".update" do
-    it "with success", context do
+    it "with new state", context do
       value = EctoAsStateMachine.State.update(%{event: @event, states: @states, model: context[:unconfirmed_user], initial: @initial})
       assert match? %{changes: %{state: "confirmed"}}, value
     end
 
-    it "with failure", context do
+    it "with same state", context do
       value = EctoAsStateMachine.State.update(%{event: [
           name:     :confirm,
           from:     [:confirmed],
@@ -70,10 +70,10 @@ defmodule EctoAsStateMachine.StateTest do
     end
 
     it "with failure", context do
-      value = EctoAsStateMachine.State.update(%{events: @events, states: @states,
+      value = EctoAsStateMachine.State.next_state(%{events: @events, states: @states,
         model: context[:admin],
         initial: @initial})
-      assert match?(%{valid?: false}, value)
+      assert match?(%{state: "admin"}, value)
     end
   end
 
