@@ -13,7 +13,7 @@
         # Priority values are: `low, normal, high, higher`
         {Credo.Check.Design.AliasUsage, priority: :low},
 
-        {Credo.Check.Refactor.CyclomaticComplexity, max_complexity: 10},
+        {Credo.Check.Refactor.CyclomaticComplexity, max_complexity: 15},
 
         # For others you can also set parameters
         {Credo.Check.Readability.MaxLineLength, priority: :low, max_length: 140},
