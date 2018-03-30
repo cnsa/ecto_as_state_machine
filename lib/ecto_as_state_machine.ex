@@ -90,7 +90,7 @@ defmodule EctoAsStateMachine do
         #=> true
     """
 
-    @spec easm([repo: Repo, initial: String.t(), inline: boolean(),
+    @spec easm([repo: Repo, initial: String.t(),
       column: atom, events: List.t(), states: List.t()]) :: term
     defmacro easm(opts) do
       app          = Project.config[:app]
@@ -100,7 +100,6 @@ defmodule EctoAsStateMachine do
       valid_states  = Keyword.get(opts, :states)
       column  = Keyword.get(opts, :column, :state)
       initial = Keyword.get(opts, :initial)
-      inline = Keyword.get(opts, :inline, false)
       events  = Keyword.get(opts, :events)
         |> Enum.map(fn(event) ->
           Keyword.put_new(event, :callback, quote(do: fn(model) -> model end))
@@ -117,7 +116,6 @@ defmodule EctoAsStateMachine do
         column: column,
         repo: repo,
         initial: initial,
-        inline: inline,
         function_prefix: function_prefix
       ] do
         def unquote(:"#{function_prefix}states")() do
@@ -166,16 +164,14 @@ defmodule EctoAsStateMachine do
           end
         end)
 
-        if inline do
-          def unquote(:"#{function_prefix}next_state")(model) do
-            State.next_state(%{
-              events: unquote(events),
-              model: model,
-              column: unquote(column),
-              states: unquote(valid_states),
-              initial: unquote(initial)
-            })
-          end
+        def unquote(:"#{function_prefix}next_state")(model) do
+          State.next_state(%{
+            events: unquote(events),
+            model: model,
+            column: unquote(column),
+            states: unquote(valid_states),
+            initial: unquote(initial)
+          })
         end
 
         valid_states

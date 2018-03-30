@@ -108,6 +108,40 @@ defmodule User do
 end
 ```
 
+## Next state
+
+`ecto_as_state_machine` uses `next_state` method to try next state. If struct have last state already, 
+it will be not changed. Look how it can be used:
+
+``` elixir
+defmodule User do
+  use Web, :model
+  
+  use EctoAsStateMachine
+  
+  easm states: [:unconfirmed, :confirmed, :blocked, :admin],
+       events: [
+         [
+           name:     :confirm,
+           from:     [:unconfirmed],
+           to:       :confirmed
+         ], [
+           name:     :block,
+           from:     [:confirmed],
+           to:       :blocked
+         ], [
+           name:     :make_admin,
+           from:     [:blocked],
+           to:       :admin
+         ]
+       ],
+       # ...
+end
+  
+user = Repo.get_by(User, id: 1) # state: unconfirmed
+new_user = user.next_state # state: confirmed
+```
+
 ## Contributions
 
 1. Clone repo: `git clone https://github.com/cnsa/ecto_as_state_machine.git`
