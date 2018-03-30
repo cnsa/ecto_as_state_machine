@@ -120,6 +120,7 @@ defmodule User do
   use EctoAsStateMachine
   
   easm states: [:unconfirmed, :confirmed, :blocked, :admin],
+       initial: :unconfirmed, 
        events: [
          [
            name:     :confirm,
@@ -139,7 +140,7 @@ defmodule User do
 end
   
 user = Repo.get_by(User, id: 1) # state: unconfirmed
-new_user = user.next_state # state: confirmed
+new_user = User.next_state(user) # state: confirmed
 ```
 
 ## Contributions
