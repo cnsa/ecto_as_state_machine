@@ -61,6 +61,17 @@ defmodule EctoAsStateMachine.StateTest do
         initial: @initial})
       assert match?(%{valid?: false}, value)
     end
+
+    it "with new state and custom column name", context do
+      other_states = [:unfirmed, :firmed]
+      other_event = [
+        name:     :firm,
+        from:     [:unfirmed],
+        to:       :firmed,
+      ]
+      value = EctoAsStateMachine.State.update(%{event: other_event, states: other_states, model: context[:unconfirmed_user], initial: "unfirmed", column: :some})
+      assert match? %{changes: %{some: "firmed"}}, value
+    end
   end
 
   describe ".next_state" do

@@ -10,7 +10,7 @@ defmodule EctoAsStateMachine.State do
   @spec update(%{event: List.t(), model: Map.t(), states: List.t(), initial: String.t(), column: atom}) :: term | %{valid: false}
   def update(%{event: event, model: model, states: states, initial: initial, column: column}) do
     model
-    |> Changeset.change(%{state: "#{event[:to]}"})
+    |> Changeset.change(%{column => "#{event[:to]}"})
     |> run_callback(event[:callback])
     |> validate_state_transition(%{
       event: event,
