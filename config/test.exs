@@ -5,7 +5,6 @@ config :ecto_as_state_machine,
 
 # Configure your database
 config :ecto_as_state_machine, EctoAsStateMachine.TestRepo,
-  adapter: Ecto.Adapters.Postgres,
   pool: Ecto.Adapters.SQL.Sandbox,
   username: System.get_env("USER"),
   password: "",
