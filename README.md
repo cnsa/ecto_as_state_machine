@@ -18,10 +18,10 @@ This package allows to use [finite state machine pattern](https://en.wikipedia.o
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
   1. Add ecto_as_state_machine to your list of dependencies in `mix.exs`:
-  
+
 ```elixir
 def deps do
-  [{:ecto_as_state_machine, "~> 1.0"}]
+  [{:ecto_as_state_machine, "~> 2.0"}]
 end
 
 ```
@@ -33,18 +33,18 @@ def application do
   [applications: [:ecto_as_state_machine]]
 end
 
-```   
+```
 
 ## Let's go:
 
 ``` elixir
 defmodule User do
   use Web, :model
-  
+
   use EctoAsStateMachine
-  
+
   easm column: :state,
-    initial: :unconfirmed, 
+    initial: :unconfirmed,
     states: [:unconfirmed, :confirmed, :blocked, :admin],
     events: [
       [
@@ -97,12 +97,12 @@ User.admin?(new_user) # => true
 ``` elixir
 defmodule User do
   use Web, :model
-  
+
   use EctoAsStateMachine
-  
+
   easm initial: :some,
     # bla-bla-bla
-    
+
   easm column: :rules,
     # bla-bla-bla
 end
@@ -116,11 +116,11 @@ it will be not changed. Look how it can be used:
 ``` elixir
 defmodule User do
   use Web, :model
-  
+
   use EctoAsStateMachine
-  
+
   easm states: [:unconfirmed, :confirmed, :blocked, :admin],
-       initial: :unconfirmed, 
+       initial: :unconfirmed,
        events: [
          [
            name:     :confirm,
@@ -138,7 +138,7 @@ defmodule User do
        ],
        # ...
 end
-  
+
 user = Repo.get_by(User, id: 1) # state: unconfirmed
 new_user = User.next_state(user) # state: confirmed
 new_user = User.next_state(new_user) # state: blocked
@@ -156,16 +156,15 @@ new_user = User.next_state(new_user) # state: admin
 
 Once you've made your additions and mix test passes, go ahead and open a PR!
 
-## Roadmap to 1.1
+## Roadmap to 2.1
 
 - [x] Cover by tests
 - [x] Custom db column name
 - [x] Validation method for changeset indicates its value in the correct range
 - [x] Initial value
 - [x] CI
+- [x] Ecto 3.0 support
 - [x] Add status? methods
-- [ ] Introduce it at elixir-radar and my blog
-- [ ] Custom error messages for changeset (with translations by gettext ability)
 - [x] Rely on last versions of ecto & elixir
 - [x] Write dedicated module instead of requiring everything into the model
 - [x] Write bang! methods which are raising exception instead of returning invalid changeset
